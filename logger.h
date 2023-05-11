@@ -3,6 +3,8 @@
 
 #include <Arduino.h>
 
+#define debug true
+
 #define LOG_ERROR 0
 #define LOG_INFO 1
 #define LOG_DEBUG 2

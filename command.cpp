@@ -1,10 +1,21 @@
 #include "command.h"
+#include <ctype.h>
+
+Command::Command() {
+  new_command[0] = {0};
+  new_command[1] = {0};
+  new_command[2] = {0};
+  message = "";
+}
 
 bool Command::handleCommand() {
   if (Serial.available()) {
     char c = Serial.read();
     if (c == '\r' || c == '\n') {
       bool b = processMessage(message);
+#if debug
+      Logger::logDEBUG("handleCommand: [" + message + "]");
+#endif
       message = "";
       return b;
     } else {
@@ -15,29 +26,20 @@ bool Command::handleCommand() {
 }
 
 bool Command::processMessage(String msg) {
-
-  new_command.valueX = 0;
-  new_command.valueY = 0;
-  new_command.valueZ = 0;
-  int active_index = 0;
-  active_index++;
-  int temp_index = active_index;
-  // 直到找到下一个字符
-  while (temp_index < msg.length() && !isAlpha(msg[temp_index])) {
-    temp_index++;
-  }
-  active_index = temp_index; 
-  temp_index++;
-  while (temp_index < msg.length()) {
-    while (!isAlpha(msg[temp_index]) || msg[temp_index] == '.') {
-      temp_index++;
-      if (temp_index == msg.length()) {
-        break;
-      }
+  new_command[0] = 0;
+  new_command[1] = 0;
+  new_command[2] = 0;
+  int begin_index = 0;
+  int end_index = begin_index;
+  // 直到找到下一个deg
+  int i = 0;
+  while (end_index <= msg.length()) {
+    if (isspace(msg[end_index]) || end_index == msg.length()) {
+      new_command[i] = msg.substring(begin_index, end_index).toFloat();
+      i++;
+      begin_index = end_index + 1;
     }
-    value_segment(msg.substring(active_index, temp_index));
-    active_index = temp_index;
-    temp_index++;
+    end_index++;
   }
   return true;
 }

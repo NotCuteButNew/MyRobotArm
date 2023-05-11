@@ -1,82 +1,55 @@
-#include <Arduino.h>
 #include "RampsStepper.h"
+#include <Arduino.h>
 
-RampsStepper::RampsStepper(int aStepPin, int aDirPin, int aEnablePin, bool aInverse, float main_gear_teeth, float motor_gear_teeth, int microsteps, int steps_per_rev) {
-  setReductionRatio(main_gear_teeth / motor_gear_teeth, microsteps * steps_per_rev);
+RampsStepper::RampsStepper(int aStepPin, int aDirPin, int aEnablePin,
+                           bool aInverse, float main_gear_teeth,
+                           float motor_gear_teeth, int microsteps,
+                           int steps_per_rev, Endstop &aEndstop) {
+  setReductionRatio(main_gear_teeth / motor_gear_teeth,
+                    microsteps * steps_per_rev);
   stepPin = aStepPin;
   dirPin = aDirPin;
   enablePin = aEnablePin;
   inverse = aInverse;
-  stepperStepPosition = 0;
   stepperStepTargetPosition;
+  endstop = &aEndstop;
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin, OUTPUT);
   pinMode(enablePin, OUTPUT);
   enable(false);
 }
 
-void RampsStepper::enable(bool value) {
-  digitalWrite(enablePin, !value);
+void RampsStepper::enable(bool value) { digitalWrite(enablePin, !value); }
+
+void RampsStepper::stepToPositionDeg(float deg) {
+  stepperStepTargetPosition = deg * degToStepFactor;
 }
 
-bool RampsStepper::isOnPosition() const {
-  return stepperStepPosition == stepperStepTargetPosition;
-}
-
-int RampsStepper::getPosition() const {
-  return stepperStepPosition;
-}
-
-void RampsStepper::setPosition(int value) {
-  stepperStepPosition = value;
-  stepperStepTargetPosition = value;
-}
-
-void RampsStepper::stepToPosition(int value) {
-  stepperStepTargetPosition = value;
-}
-
-void RampsStepper::stepToPositionMM(float mm, float steps_per_mm) {
-  stepperStepTargetPosition = mm * steps_per_mm;
-}
-
-void RampsStepper::stepRelative(int value) {
-  value += stepperStepPosition;
-  stepToPosition(value);
-}
-
-float RampsStepper::getPositionRad() const {
-  return stepperStepPosition / radToStepFactor;
-}
-
-void RampsStepper::setPositionRad(float rad) {
-  setPosition(rad * radToStepFactor);
-}
-
-void RampsStepper::stepToPositionRad(float rad) {
-  stepperStepTargetPosition = rad * radToStepFactor;
-}
-
-void RampsStepper::stepRelativeRad(float rad) {
-  stepRelative(rad * radToStepFactor);
-}
-
-void RampsStepper::update() {   
-  while (stepperStepTargetPosition < stepperStepPosition) {  
-    digitalWrite(dirPin, !inverse);
+void RampsStepper::update() {
+  float temp_steps = abs(stepperStepTargetPosition);
+  bool temp_dir = true;
+  if (stepperStepTargetPosition < 0)
+    temp_dir = false;
+  if (temp_dir ^ inverse) // 旋转方向^是否反转，相同为逆时针，不同为顺时针
+    digitalWrite(dirPin, LOW);
+  else
+    digitalWrite(dirPin, HIGH);
+  digitalWrite(enablePin, LOW);
+  while (temp_steps > 0) {
     digitalWrite(stepPin, HIGH);
     digitalWrite(stepPin, LOW);
-    stepperStepPosition--;
+    delayMicroseconds(250);
+    temp_steps--;
+    if (endstop->state()) {
+      Logger::logINFO(
+          "Limit: The limit switch is touched and the movement has stopped");
+      break;
+    }
   }
-  
-  while (stepperStepTargetPosition > stepperStepPosition) {    
-    digitalWrite(dirPin, inverse);
-    digitalWrite(stepPin, HIGH);
-    digitalWrite(stepPin, LOW);
-    stepperStepPosition++;
-  }
+  digitalWrite(enablePin, HIGH);
+  stepperStepTargetPosition = 0;
 }
 
 void RampsStepper::setReductionRatio(float gearRatio, int stepsPerRev) {
-  radToStepFactor = gearRatio * stepsPerRev / 2 / PI;
+  degToStepFactor = gearRatio * stepsPerRev / 360;
 };

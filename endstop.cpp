@@ -80,9 +80,6 @@ void Endstop::oneStepToEndstop(bool dir) {
 
   if (!bState) {
     // 先设为高电平再设为低电平，模拟脉冲
-    #if Mydebug
-      debug_logs("\n-----设为高电平再设为低电平，模拟脉冲-----\n");
-    #endif
     digitalWrite(step_pin, HIGH);
     digitalWrite(step_pin, LOW);
     delayMicroseconds(home_dwell);
