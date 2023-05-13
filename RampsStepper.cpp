@@ -38,7 +38,7 @@ void RampsStepper::update() {
   while (temp_steps > 0) {
     digitalWrite(stepPin, HIGH);
     digitalWrite(stepPin, LOW);
-    delayMicroseconds(250);
+    delayMicroseconds(400);
     temp_steps--;
     if (endstop->state()) {
       Logger::logINFO(

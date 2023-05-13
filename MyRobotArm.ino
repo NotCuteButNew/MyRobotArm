@@ -32,10 +32,10 @@ Queue<float *> queue(QUEUE_SIZE);
 Command command;
 
 void executeCommand(float *cmd);
-
+  
 void setup() {
   Serial.begin(BAUD);
-  homeSequence();
+  //homeSequence();
   Logger::logINFO("************start************");
 }
 
@@ -44,6 +44,7 @@ void loop() {
   stepperLower.update();
   stepperHigher.update();
   if (!queue.isFull()) {
+    Logger::logINFO("---waiting for the next command---");
     if (command.handleCommand()) {
       queue.push(command.new_command);
     }
