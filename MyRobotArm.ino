@@ -32,10 +32,10 @@ Queue<float *> queue(QUEUE_SIZE);
 Command command;
 
 void executeCommand(float *cmd);
-  
+
 void setup() {
   Serial.begin(BAUD);
-  //homeSequence();
+  // homeSequence();
   Logger::logINFO("************start************");
 }
 
@@ -76,6 +76,7 @@ void executeCommand(float *cmd) {
   stepperHigher.stepToPositionDeg(cmd[0]);
   stepperLower.stepToPositionDeg(cmd[1]);
   stepperRotate.stepToPositionDeg(cmd[2]);
-  Logger::logINFO("executing command: [" + String(cmd[0]) + " " +
-                  String(cmd[1]) + " " + String(cmd[2]) + "]");
+  Logger::logINFO("executing command: [(" + String(int(cmd[0])) + ")" + " " +
+                  String(cmd[1]) + " " + String(cmd[2]) + " " + String(cmd[3]) +
+                  "]");
 }

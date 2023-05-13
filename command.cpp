@@ -5,6 +5,7 @@ Command::Command() {
   new_command[0] = {0};
   new_command[1] = {0};
   new_command[2] = {0};
+  new_command[3] = {0};
   message = "";
 }
 
@@ -29,6 +30,7 @@ bool Command::processMessage(String msg) {
   new_command[0] = 0;
   new_command[1] = 0;
   new_command[2] = 0;
+  new_command[3] = 0;
   int begin_index = 0;
   int end_index = begin_index;
   // 直到找到下一个deg

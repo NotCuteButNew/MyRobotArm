@@ -11,7 +11,7 @@ public:
   void value_segment(String msg_segment);
   void cmdToRelative();
   void cmdToAbsolute();
-  float new_command[3];
+  float new_command[4];
 private:
   String message;
 };
