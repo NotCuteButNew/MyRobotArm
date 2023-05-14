@@ -5,11 +5,14 @@
 #include "endstop.h"
 #include "logger.h"
 #include "pinout.h"
+#include "pins_arduino.h"
 #include "queue.h"
+#include <TimerOne.h>
 #include <arduino.h>
 
 void setStepperEnable(bool enable);
 void homeSequence();
+void updateWraper();
 
 Endstop endstopX(X_MIN_PIN, X_DIR_PIN, X_STEP_PIN, X_ENABLE_PIN, X_MIN_INPUT,
                  X_HOME_STEPS, HOME_DWELL, false);
@@ -37,19 +40,22 @@ void setup() {
   Serial.begin(BAUD);
   // homeSequence();
   Logger::logINFO("************start************");
+  Timer1.initialize(HOME_DWELL);
+  Timer1.attachInterrupt(updateWraper);
 }
 
 void loop() {
-  stepperRotate.update();
-  stepperLower.update();
-  stepperHigher.update();
+  // stepperRotate.update();
+  // stepperLower.update();
+  // stepperHigher.update();
   if (!queue.isFull()) {
     Logger::logINFO("---waiting for the next command---");
     if (command.handleCommand()) {
       queue.push(command.new_command);
     }
   }
-  if ((!queue.isEmpty())) {
+  if ((!queue.isEmpty()) && stepperHigher.isdone() && stepperLower.isdone() &&
+      stepperRotate.isdone()) {
     executeCommand(queue.pop());
   }
 }
@@ -80,3 +86,5 @@ void executeCommand(float *cmd) {
                   String(cmd[1]) + " " + String(cmd[2]) + " " + String(cmd[3]) +
                   "]");
 }
+
+void updateWraper() { stepperHigher.update(); }

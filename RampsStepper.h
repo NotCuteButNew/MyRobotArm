@@ -11,6 +11,8 @@ public:
   void stepToPositionDeg(float deg);
   void update();
   void setReductionRatio(float gearRatio, int stepsPerRev);
+  bool isdone();
+  void reverseOffset();
 
 private:
   int stepperStepTargetPosition;

@@ -105,3 +105,13 @@ bool Endstop::state() {
   }
   return bState;
 }
+
+// void Endstop::enableInterrupt()
+// {
+//     attachInterrupt(digitalPinToInterrupt(min_pin), buttonInterrupt, RISING);
+// }
+
+// void setOffset()
+// {
+  
+// }

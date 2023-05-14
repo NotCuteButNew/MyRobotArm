@@ -1,6 +1,6 @@
 #ifndef QUEUE_H_
 #define QUEUE_H_
-
+#include "logger.h"
 template <typename Element> class Queue {
 public:
   Queue(int alen);
@@ -12,62 +12,58 @@ public:
   int getFreeSpace() const;
   int getMaxLength() const;
   inline int getUsedSpace() const;
+
 private:
-  Queue(Queue<Element>& q);  //copy const.
-  Element* data;
+  Queue(Queue<Element> &q); // copy const.
+  Element *data;
   int len;
   int start;
   int count;
 };
 
-template <typename Element>
-Queue<Element>::Queue(int alen) {
+template <typename Element> Queue<Element>::Queue(int alen) {
   data = new Element[alen];
   len = alen;
   start = 0;
   count = 0;
 }
 
-template <typename Element>
-Queue<Element>::~Queue() {
-  delete data;
-}
+template <typename Element> Queue<Element>::~Queue() { delete data; }
 
-template <typename Element>
-bool Queue<Element>::push(Element elem) {
+template <typename Element> bool Queue<Element>::push(Element elem) {
   data[(start + count++) % len] = elem;
+#if debug
+  Logger::logDEBUG("--push--");
+#endif
 }
 
-template <typename Element>
-Element Queue<Element>::pop() {
+template <typename Element> Element Queue<Element>::pop() {
   count--;
   int s = start;
   start = (start + 1) % len;
+#if debug
+  Logger::logDEBUG("--pop--");
+#endif
   return data[(s) % len];
 }
 
-template <typename Element>
-bool Queue<Element>::isFull() const {
+template <typename Element> bool Queue<Element>::isFull() const {
   return count >= len;
 }
 
-template <typename Element>
-bool Queue<Element>::isEmpty() const {
+template <typename Element> bool Queue<Element>::isEmpty() const {
   return count <= 0;
 }
 
-template <typename Element>
-int Queue<Element>::getFreeSpace() const {
+template <typename Element> int Queue<Element>::getFreeSpace() const {
   return len - count;
 }
 
-template <typename Element>
-int Queue<Element>::getMaxLength() const {
+template <typename Element> int Queue<Element>::getMaxLength() const {
   return len;
 }
 
-template <typename Element>
-int Queue<Element>::getUsedSpace() const {
+template <typename Element> int Queue<Element>::getUsedSpace() const {
   return count;
 }
 

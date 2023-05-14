@@ -9,7 +9,7 @@ class Endstop {
     void oneStepToEndstop(bool dir);
     bool state();
     bool bState;
-
+    void enableInterrupt();
   private:
     int min_pin;
     int dir_pin;
@@ -20,5 +20,5 @@ class Endstop {
     int step_offset;
     bool swap_pin;    
 };
-
+void setOffset();
 #endif
