@@ -1,7 +1,7 @@
 #ifndef COMMAND_H
 #define COMMAND_H
-#include <Arduino.h>
 #include "logger.h"
+#include <Arduino.h>
 
 class Command {
 public:
@@ -12,6 +12,7 @@ public:
   void cmdToRelative();
   void cmdToAbsolute();
   float new_command[4];
+
 private:
   String message;
 };

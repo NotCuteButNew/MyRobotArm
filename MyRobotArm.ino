@@ -1,5 +1,6 @@
 #include "HardwareSerial.h"
 #include "RampsStepper.h"
+#include "arduino.h"
 #include "command.h"
 #include "config.h"
 #include "endstop.h"
@@ -7,12 +8,16 @@
 #include "pinout.h"
 #include "pins_arduino.h"
 #include "queue.h"
+#include <TimerFour.h>
 #include <TimerOne.h>
+#include <TimerThree.h>
 #include <arduino.h>
 
 void setStepperEnable(bool enable);
 void homeSequence();
-void updateWraper();
+void updateWraper1();
+void updateWraper3();
+void updateWraper4();
 
 Endstop endstopX(X_MIN_PIN, X_DIR_PIN, X_STEP_PIN, X_ENABLE_PIN, X_MIN_INPUT,
                  X_HOME_STEPS, HOME_DWELL, false);
@@ -41,7 +46,13 @@ void setup() {
   // homeSequence();
   Logger::logINFO("************start************");
   Timer1.initialize(HOME_DWELL);
-  Timer1.attachInterrupt(updateWraper);
+  Timer1.attachInterrupt(updateWraper1);
+  delayMicroseconds(HOME_DWELL / 3);
+  Timer3.initialize(HOME_DWELL);
+  Timer3.attachInterrupt(updateWraper3);
+  delayMicroseconds(HOME_DWELL / 3);
+  Timer4.initialize(HOME_DWELL);
+  Timer4.attachInterrupt(updateWraper4);
 }
 
 void loop() {
@@ -82,9 +93,11 @@ void executeCommand(float *cmd) {
   stepperHigher.stepToPositionDeg(cmd[0]);
   stepperLower.stepToPositionDeg(cmd[1]);
   stepperRotate.stepToPositionDeg(cmd[2]);
-  Logger::logINFO("executing command: [(" + String(int(cmd[0])) + ")" + " " +
+  Logger::logINFO("executing command: [" + String(cmd[0]) + " " +
                   String(cmd[1]) + " " + String(cmd[2]) + " " + String(cmd[3]) +
                   "]");
 }
 
-void updateWraper() { stepperHigher.update(); }
+void updateWraper1() { stepperHigher.update(); }
+void updateWraper3() { stepperLower.update(); }
+void updateWraper4() { stepperRotate.update(); }
