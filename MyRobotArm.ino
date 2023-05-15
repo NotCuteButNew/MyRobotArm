@@ -1,4 +1,3 @@
-#include "HardwareSerial.h"
 #include "RampsStepper.h"
 #include "arduino.h"
 #include "command.h"
@@ -6,7 +5,6 @@
 #include "endstop.h"
 #include "logger.h"
 #include "pinout.h"
-#include "pins_arduino.h"
 #include "queue.h"
 #include <TimerFour.h>
 #include <TimerOne.h>
@@ -40,6 +38,10 @@ Queue<float *> queue(QUEUE_SIZE);
 Command command;
 
 void executeCommand(float *cmd);
+
+char serialBuffer[QUEUE_SIZE];
+volatile uint8_t serialBufferHead = 0;
+volatile uint8_t serialBufferTail = 0;
 
 void setup() {
   Serial.begin(BAUD);
@@ -101,3 +103,4 @@ void executeCommand(float *cmd) {
 void updateWraper1() { stepperHigher.update(); }
 void updateWraper3() { stepperLower.update(); }
 void updateWraper4() { stepperRotate.update(); }
+void usartWraper() { command.handleCommand(); }

@@ -10,13 +10,13 @@ Command::Command() {
 }
 
 bool Command::handleCommand() {
-  if (Serial.available()) {
+  while (Serial.available()) {
     char c = Serial.read();
     if (c == '\r' || c == '\n') {
-      bool b = processMessage(message);
 #if debug
       Logger::logDEBUG("handleCommand: [" + message + "]");
 #endif
+      bool b = processMessage(message);
       message = "";
       return b;
     } else {

@@ -27,31 +27,43 @@ void RampsStepper::stepToPositionDeg(float deg) {
 }
 
 void RampsStepper::update() {
+  //   if (stepperStepTargetPosition) {
+  // #if debug
+  //     // Logger::logDEBUG("----Updating----");
+  //     // debug_logs();
+  //     unsigned long startTime = micros();
+  // #endif
+  //     bool temp_dir = true;
+  //     if (stepperStepTargetPosition < 0) {
+  //       temp_dir = false;
+  //       stepperStepTargetPosition++;
+  //     } else {
+  //       stepperStepTargetPosition--;
+  //     }
+  //     if (temp_dir ^ inverse) //
+  //     (旋转方向)^(是否反转)，相同为逆时针，不同为顺时针
+  //       digitalWrite(dirPin, LOW);
+  //     else
+  //       digitalWrite(dirPin, HIGH);
+  //     digitalWrite(stepPin, HIGH);
+  //     digitalWrite(stepPin, LOW);
+  // #if debug
+  //     unsigned long endTime = micros();
+  //     char buf[30];
+  //     sprintf(buf, "[%lu us]", endTime - startTime);
+  //     Logger::logDEBUG(buf);
+  // #endif
+  //   }
   if (stepperStepTargetPosition) {
-#if debug
-    // Logger::logDEBUG("----Updating----");
-    // debug_logs();
-    unsigned long startTime = micros();
-#endif
-    bool temp_dir = true;
     if (stepperStepTargetPosition < 0) {
-      temp_dir = false;
       stepperStepTargetPosition++;
+      digitalWrite(dirPin, LOW);
     } else {
+      digitalWrite(dirPin, HIGH);
       stepperStepTargetPosition--;
     }
-    if (temp_dir ^ inverse) // (旋转方向)^(是否反转)，相同为逆时针，不同为顺时针
-      digitalWrite(dirPin, LOW);
-    else
-      digitalWrite(dirPin, HIGH);
     digitalWrite(stepPin, HIGH);
     digitalWrite(stepPin, LOW);
-#if debug
-    unsigned long endTime = micros();
-    char buf[30];
-    sprintf(buf, "[%lu us]", endTime - startTime);
-    Logger::logDEBUG(buf);
-#endif
   }
 }
 void RampsStepper::setReductionRatio(float gearRatio, int stepsPerRev) {
