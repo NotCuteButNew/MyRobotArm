@@ -58,9 +58,6 @@ void setup() {
 }
 
 void loop() {
-  // stepperRotate.update();
-  // stepperLower.update();
-  // stepperHigher.update();
   if (!queue.isFull()) {
     Logger::logINFO("---waiting for the next command---");
     if (command.handleCommand()) {
