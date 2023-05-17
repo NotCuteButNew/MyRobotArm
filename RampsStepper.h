@@ -15,7 +15,7 @@ public:
   void reverseOffset();
 
 private:
-  int stepperStepTargetPosition;
+  unsigned long stepperStepTargetPosition;
   int stepPin;
   int dirPin;
   int enablePin;

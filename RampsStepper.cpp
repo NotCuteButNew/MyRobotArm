@@ -25,21 +25,20 @@ void RampsStepper::enable(bool value) { digitalWrite(enablePin, !value); }
 void RampsStepper::stepToPositionDeg(float deg) {
   if (inverse)
     deg = -deg;
-  stepperStepTargetPosition = deg * degToStepFactor;
+  if (deg < 0) {
+    digitalWrite(dirPin, LOW);
+  } else {
+    digitalWrite(dirPin, HIGH);
+  }
+  stepperStepTargetPosition = (unsigned long)abs(deg) * degToStepFactor;
 }
 
 void RampsStepper::
     update() { // 通过定时器的中断函数调用，每调用一次发送一次脉冲
   if (stepperStepTargetPosition) {
-    if (stepperStepTargetPosition < 0) {
-      stepperStepTargetPosition++;
-      digitalWrite(dirPin, LOW);
-    } else {
-      digitalWrite(dirPin, HIGH);
-      stepperStepTargetPosition--;
-    }
     digitalWrite(stepPin, HIGH);
     digitalWrite(stepPin, LOW);
+    stepperStepTargetPosition--;
   }
 }
 void RampsStepper::setReductionRatio(float gearRatio, int stepsPerRev) {
