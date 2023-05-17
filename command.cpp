@@ -22,7 +22,7 @@ bool Command::handleCommand() {
     } else {
       message += c;
     }
-  }
+  }     
   return false;
 }
 
