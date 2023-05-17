@@ -51,7 +51,7 @@ volatile uint8_t serialBufferTail = 0;
 void setup() {
   Serial.begin(BAUD);
   // homeSequence();
-  //Logger::logINFO("************start************");
+  // Logger::logINFO("************start************");
   Timer1.initialize(HOME_DWELL);
   Timer1.attachInterrupt(updateWraper1);
   delayMicroseconds(HOME_DWELL / 3);
@@ -67,7 +67,7 @@ void loop() {
 #if debug
     startTime = millis();
 #endif
-    Serial.println(String(queue.getRealCount()));
+    // Serial.println(String(queue.getRealCount()));
     if (command.handleCommand()) {
       queue.push(command.new_command);
     }
@@ -104,7 +104,7 @@ void executeCommand(float *cmd) {
   stepperHigher.stepToPositionDeg(cmd[0]);
   stepperLower.stepToPositionDeg(cmd[1]);
   stepperRotate.stepToPositionDeg(cmd[2]);
-#if debug
+#if true
   Logger::logINFO("executing command: [" + String(cmd[0]) + " " +
                   String(cmd[1]) + " " + String(cmd[2]) + " " + String(cmd[3]) +
                   "]");

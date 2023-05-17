@@ -2,6 +2,7 @@
 #define QUEUE_H_
 #include "WString.h"
 #include "logger.h"
+
 template <typename Element> class Queue {
 public:
   Queue(int alen);
@@ -36,21 +37,13 @@ template <typename Element> Queue<Element>::~Queue() { delete data; }
 
 template <typename Element> bool Queue<Element>::push(Element elem) {
   data[(start + count++) % len] = elem;
-  //Logger::logINFO("--push--");
   realcount++;
-#if debug
-  Logger::logDEBUG("--push-- count= " + String(count));
-  Logger::logDEBUG("realcount = " + String(++realcount));
-#endif
 }
 
 template <typename Element> Element Queue<Element>::pop() {
   count--;
   int s = start;
   start = (start + 1) % len;
-#if debug
-  Logger::logDEBUG("--pop-- count= " + String(count));
-#endif
   return data[(s) % len];
 }
 
