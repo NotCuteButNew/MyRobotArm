@@ -1,5 +1,6 @@
 #ifndef QUEUE_H_
 #define QUEUE_H_
+#include "WString.h"
 #include "logger.h"
 template <typename Element> class Queue {
 public:
@@ -12,6 +13,7 @@ public:
   int getFreeSpace() const;
   int getMaxLength() const;
   inline int getUsedSpace() const;
+  inline int getRealCount() const;
 
 private:
   Queue(Queue<Element> &q); // copy const.
@@ -19,6 +21,7 @@ private:
   int len;
   int start;
   int count;
+  int realcount;
 };
 
 template <typename Element> Queue<Element>::Queue(int alen) {
@@ -26,14 +29,18 @@ template <typename Element> Queue<Element>::Queue(int alen) {
   len = alen;
   start = 0;
   count = 0;
+  realcount = 0;
 }
 
 template <typename Element> Queue<Element>::~Queue() { delete data; }
 
 template <typename Element> bool Queue<Element>::push(Element elem) {
   data[(start + count++) % len] = elem;
+  //Logger::logINFO("--push--");
+  realcount++;
 #if debug
-  Logger::logDEBUG("--push--");
+  Logger::logDEBUG("--push-- count= " + String(count));
+  Logger::logDEBUG("realcount = " + String(++realcount));
 #endif
 }
 
@@ -42,7 +49,7 @@ template <typename Element> Element Queue<Element>::pop() {
   int s = start;
   start = (start + 1) % len;
 #if debug
-  Logger::logDEBUG("--pop--");
+  Logger::logDEBUG("--pop-- count= " + String(count));
 #endif
   return data[(s) % len];
 }
@@ -65,6 +72,10 @@ template <typename Element> int Queue<Element>::getMaxLength() const {
 
 template <typename Element> int Queue<Element>::getUsedSpace() const {
   return count;
+}
+
+template <typename Element> int Queue<Element>::getRealCount() const {
+  return realcount;
 }
 
 #endif

@@ -37,6 +37,11 @@ Queue<float *> queue(QUEUE_SIZE);
 
 Command command;
 
+#if debug
+unsigned long startTime = millis();
+unsigned long endTime = millis();
+#endif
+
 void executeCommand(float *cmd);
 
 char serialBuffer[QUEUE_SIZE];
@@ -46,7 +51,7 @@ volatile uint8_t serialBufferTail = 0;
 void setup() {
   Serial.begin(BAUD);
   // homeSequence();
-  Logger::logINFO("************start************");
+  //Logger::logINFO("************start************");
   Timer1.initialize(HOME_DWELL);
   Timer1.attachInterrupt(updateWraper1);
   delayMicroseconds(HOME_DWELL / 3);
@@ -59,7 +64,10 @@ void setup() {
 
 void loop() {
   if (!queue.isFull()) {
-    Logger::logINFO("---waiting for the next command---");
+#if debug
+    startTime = millis();
+#endif
+    Serial.println(String(queue.getRealCount()));
     if (command.handleCommand()) {
       queue.push(command.new_command);
     }
@@ -67,6 +75,10 @@ void loop() {
   if ((!queue.isEmpty()) && stepperHigher.isdone() && stepperLower.isdone() &&
       stepperRotate.isdone()) {
     executeCommand(queue.pop());
+#if debug
+    endTime = millis();
+    Logger::logDEBUG("loop time: " + String(endTime - startTime));
+#endif
   }
 }
 
@@ -92,9 +104,11 @@ void executeCommand(float *cmd) {
   stepperHigher.stepToPositionDeg(cmd[0]);
   stepperLower.stepToPositionDeg(cmd[1]);
   stepperRotate.stepToPositionDeg(cmd[2]);
+#if debug
   Logger::logINFO("executing command: [" + String(cmd[0]) + " " +
                   String(cmd[1]) + " " + String(cmd[2]) + " " + String(cmd[3]) +
                   "]");
+#endif
 }
 
 void updateWraper1() { stepperHigher.update(); }

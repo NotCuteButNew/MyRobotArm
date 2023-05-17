@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-#define debug true
+#define debug false
 
 #define debug_logs()                                                           \
   do {                                                                         \
