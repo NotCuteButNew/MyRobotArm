@@ -1,4 +1,5 @@
 #include "command.h"
+#include "WString.h"
 #include <ctype.h>
 
 Command::Command() {
@@ -7,23 +8,6 @@ Command::Command() {
   new_command[2] = {0};
   new_command[3] = {0};
   message = "";
-}
-
-bool Command::handleCommand() {
-  while (Serial.available()) {
-    char c = Serial.read();
-    if (c == '\r' || c == '\n') {
-#if debug
-      Logger::logDEBUG("handleCommand: [" + message + "]");
-#endif
-      bool b = processMessage(message);
-      message = "";
-      return b;
-    } else {
-      message += c;
-    }
-  }     
-  return false;
 }
 
 bool Command::processMessage(String msg) {
@@ -36,12 +20,17 @@ bool Command::processMessage(String msg) {
   // 直到找到下一个deg
   int i = 0;
   while (end_index <= msg.length()) {
-    if (isspace(msg[end_index]) || end_index == msg.length()) {
+    if (msg[end_index]==',' || end_index == msg.length()) {
       new_command[i] = msg.substring(begin_index, end_index).toFloat();
       i++;
       begin_index = end_index + 1;
     }
     end_index++;
   }
+#if debug
+  Logger::logDEBUG(msg + "\tprocessMessage: [" + String(new_command[0]) + " " +
+                   String(new_command[1]) + " " + String(new_command[2]) + " " +
+                   String(new_command[3]) + "]");
+#endif
   return true;
 }
