@@ -22,11 +22,6 @@
 #define Z_MIN_PIN 18
 #define Z_MAX_PIN 19
 
-#define E0_STEP_PIN 26
-#define E0_DIR_PIN 28
-#define E0_ENABLE_PIN 24
-#define E0_MIN_PIN 20
-
 #define SERVO_PIN 4
 
 #define LED_PIN 13
