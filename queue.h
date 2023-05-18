@@ -38,11 +38,18 @@ template <typename Element> Queue<Element>::~Queue() { delete data; }
 template <typename Element> bool Queue<Element>::push(Element elem) {
   data[(start + count++) % len] = elem;
   realcount++;
+#if debug
+  Logger::logDEBUG("push: [("+String(count)+")"+" "+ String(elem[0]) + " " + String(elem[1]) + " " +
+                   String(elem[2]) + " " + String(elem[3]) + "]");
+#endif
 }
 
 template <typename Element> Element Queue<Element>::pop() {
   count--;
   int s = start;
+#if debug
+  Logger::logDEBUG("pop start : ("+String(count)+") " + String(start));
+#endif
   start = (start + 1) % len;
   return data[(s) % len];
 }

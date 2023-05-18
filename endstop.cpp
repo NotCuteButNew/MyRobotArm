@@ -93,12 +93,6 @@ bool Endstop::state() {
     delayMicroseconds(5);
   }
   bState = !(digitalRead(min_pin) ^ switch_input);
-#if Mydebug
-  if (bState)
-    debug_logs("\n----EndStop touched----\n");
-  if (!bState)
-    debug_logs("\n----EndStop not touched----\n");
-#endif
   if (swap_pin == true) {
     pinMode(min_pin, OUTPUT);
     delayMicroseconds(5);
