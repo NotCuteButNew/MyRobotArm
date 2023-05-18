@@ -24,13 +24,9 @@
 #define INITIAL_E0 0.0 // RAIL STEPPER ENDSTOP POSITION
 
 //  CALIBRATE HOME STEPS TO REACH DESIRED INITIAL_XYZ POSITIONS
-#define X_HOME_STEPS                                                           \
-  1020 // 1020 //765 //860 // STEPS FROM X_ENDSTOP TO INITIAL_XYZ FOR UPPER ARM
-#define Y_HOME_STEPS                                                           \
-  1900 // 1900 //1940 // STEPS FROM Y_ENDSTOP TO INITIAL_XYZ FOR LOWER ARM
-#define Z_HOME_STEPS                                                           \
-  3640 // 3640 // STEPS FROM Z_ENDSTOP TO INITIAL_XYZ FOR ROTATION CENTER
-#define E0_HOME_STEPS 300 // STEPS FROM E0_ENDSTOP TO INITIAL_E0
+#define X_HOME_STEPS 1600
+#define Y_HOME_STEPS 600
+#define Z_HOME_STEPS 3640
 
 // 1020 1900 3640 300
 
@@ -46,7 +42,7 @@
 // STEPPER SETTINGS:
 #define MICROSTEPS 16            // MICROSTEPPING CONFIGURATION ON RAMPS1.4
 #define STEPS_PER_REV 200        // NEMA17 STEPS PER REVOLUTION
-#define INVERSE_X_STEPPER true  // CHANGE IF STEPPER MOVES OTHER WAY
+#define INVERSE_X_STEPPER true   // CHANGE IF STEPPER MOVES OTHER WAY
 #define INVERSE_Y_STEPPER false  // CHANGE IF STEPPER MOVES OTHER WAY
 #define INVERSE_Z_STEPPER false  // CHANGE IF STEPPER MOVES OTHER WAY
 #define INVERSE_E0_STEPPER false // CHANGE IF STEPPER MOVES OTHER WAY
@@ -63,8 +59,8 @@
 #define MAIN_GEAR_TEETH                                                        \
   90.0 // 90.0 FOR 20SFFACTORY BELT VERSION   32.0 FOR FTOBLER GEAR VERSION
 
-#define SERVO_GRIP_DEGREE 90.0
-#define SERVO_UNGRIP_DEGREE 0.0
+#define SERVO_GRIP_DEGREE 45
+#define SERVO_UNGRIP_DEGREE 130
 
 // COMMAND QUEUE SETTINGS
 #define QUEUE_SIZE 1
@@ -79,18 +75,5 @@
 // 0: ERROR
 // 1: INFO
 // 2: DEBUG
-
-// MOVE LIMIT PARAMETERS
-#define Z_MIN -140.0 // MINIMUM Z HEIGHT OF TOOLHEAD TOUCHING GROUND
-#define Z_MAX                                                                  \
-  (LOW_SHANK_LENGTH + 30.0) // SHANK_LENGTH ADDING ARBITUARY NUMBER FOR Z_MAX
-#define SHANKS_MIN_ANGLE_COS 0.791436948
-#define SHANKS_MAX_ANGLE_COS -0.774944489
-#define R_MIN                                                                  \
-  (sqrt((sq(LOW_SHANK_LENGTH) + sq(HIGH_SHANK_LENGTH)) -                       \
-        (2 * LOW_SHANK_LENGTH * HIGH_SHANK_LENGTH * SHANKS_MIN_ANGLE_COS)))
-#define R_MAX                                                                  \
-  (sqrt((sq(LOW_SHANK_LENGTH) + sq(HIGH_SHANK_LENGTH)) -                       \
-        (2 * LOW_SHANK_LENGTH * HIGH_SHANK_LENGTH * SHANKS_MAX_ANGLE_COS)))
 
 #endif
