@@ -37,7 +37,6 @@ template <typename Element> Queue<Element>::~Queue() { delete data; }
 
 template <typename Element> bool Queue<Element>::push(Element elem) {
   data[(start + count++) % len] = elem;
-  count++;
   realcount++;
 }
 
