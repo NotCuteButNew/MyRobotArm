@@ -27,15 +27,6 @@
 #define E0_ENABLE_PIN 24
 #define E0_MIN_PIN 20
 
-#define E1_STEP_PIN 36
-#define E1_DIR_PIN 34
-#define E1_ENABLE_PIN 30
-
-#define BYJ_PIN_0 40
-#define BYJ_PIN_1 63
-#define BYJ_PIN_2 59
-#define BYJ_PIN_3 64
-
 #define SERVO_PIN 4
 
 #define LED_PIN 13
