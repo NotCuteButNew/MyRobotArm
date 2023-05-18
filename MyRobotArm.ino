@@ -86,9 +86,9 @@ void loop() {
   if ((!queue.isEmpty()) && stepperHigher.isdone() && stepperLower.isdone() &&
       stepperRotate.isdone()) {
     if (servoStatus)
-      servo_sg90.write(90);
+      servo_sg90.write(SERVO_GRIP_DEGREE);
     else
-      servo_sg90.write(0);
+      servo_sg90.write(SERVO_UNGRIP_DEGREE);
     executeCommand(queue.pop());
   }
 }
