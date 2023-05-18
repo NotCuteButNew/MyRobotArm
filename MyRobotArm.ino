@@ -41,21 +41,17 @@ Command command;
 
 File file;
 
-char serialBuffer[QUEUE_SIZE];
-volatile uint8_t serialBufferHead = 0;
-volatile uint8_t serialBufferTail = 0;
-
 void setStepperEnable(bool enable);
 void homeSequence();
-void updateWraper1();
-void updateWraper3();
-void updateWraper4();
+void updateWraper1(); // Higher步进电机update函数接口，用于timer1中断
+void updateWraper3(); // lower步进电机update函数接口，用于timer3中断
+void updateWraper4(); // rotate步进电机update函数接口，用于timer4中断
 void executeCommand(float *cmd);
 
 void setup() {
   Serial.begin(BAUD);
-  // homeSequence();
-  // Logger::logINFO("************start************");
+  homeSequence();
+  Logger::logINFO("************start************");
   if (!SD.begin(SDSS)) {
     Logger::logINFO("SD card initialization failed");
     return;
