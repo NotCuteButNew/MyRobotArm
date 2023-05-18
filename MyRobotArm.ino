@@ -102,8 +102,8 @@ void setStepperEnable(bool enable) {
 void homeSequence() {
   setStepperEnable(false);
   if (HOME_Y_STEPPER && HOME_X_STEPPER) {
-    endstopY.home(INVERSE_Y_STEPPER);
     endstopX.home(INVERSE_X_STEPPER);
+    endstopY.home(INVERSE_Y_STEPPER);
   }
   if (HOME_Z_STEPPER) {
     endstopZ.home(INVERSE_Z_STEPPER);
