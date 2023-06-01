@@ -13,7 +13,12 @@
 #include <TimerFour.h>
 #include <TimerOne.h>
 #include <TimerThree.h>
+#include <U8g2lib.h>
+#include <U8x8lib.h>
 #include <arduino.h>
+
+U8G2_ST7920_128X64_1_SW_SPI u8g2(U8G2_R0, /* clock=*/16, /* data=*/17,
+                                 /* CS=*/23, /* reset=*/U8X8_PIN_NONE);
 
 Endstop endstopX(X_MIN_PIN, X_DIR_PIN, X_STEP_PIN, X_ENABLE_PIN, X_MIN_INPUT,
                  X_HOME_STEPS, HOME_DWELL, false);
@@ -51,7 +56,8 @@ void executeCommand(float *cmd);
 void setup() {
   Serial.begin(BAUD);
   homeSequence();
-  Logger::logINFO("************start************");
+  // Logger::logINFO("************start************");
+  delay(1000);
   if (!SD.begin(SDSS)) {
     Logger::logINFO("SD card initialization failed");
     return;
@@ -80,15 +86,11 @@ void loop() {
       command.processMessage(line);
       queue.push(command.new_command);
     } else {
-      Logger::logINFO("mission completed");
+      //lcdLogINFO("mission completed");
     }
   }
   if ((!queue.isEmpty()) && stepperHigher.isdone() && stepperLower.isdone() &&
       stepperRotate.isdone()) {
-    if (servoStatus)
-      servo_sg90.write(SERVO_GRIP_DEGREE);
-    else
-      servo_sg90.write(SERVO_UNGRIP_DEGREE);
     executeCommand(queue.pop());
   }
 }
@@ -108,19 +110,27 @@ void homeSequence() {
   if (HOME_Z_STEPPER) {
     endstopZ.home(INVERSE_Z_STEPPER);
   }
-  Logger::logINFO("HOMING COMPLETE");
+  // Logger::logINFO("HOMING COMPLETE");
 }
 
 void executeCommand(float *cmd) {
+  servoStatus = cmd[3];
+  if (servoStatus)
+    servo_sg90.write(SERVO_GRIP_DEGREE);
+  else
+    servo_sg90.write(SERVO_UNGRIP_DEGREE);
   stepperHigher.stepToPositionDeg(cmd[0]);
   stepperLower.stepToPositionDeg(cmd[1]);
   stepperRotate.stepToPositionDeg(cmd[2]);
-  servoStatus = cmd[3];
-#if true
-  Logger::logINFO("executing command: [" + String(cmd[0]) + " " +
+#if false
+  /*Logger::logINFO("executing command: [" + String(cmd[0]) + " " +
                   String(cmd[1]) + " " + String(cmd[2]) + " " + String(cmd[3]) +
                   "]");
-  Logger::logDEBUG("realCount: " + String(queue.getRealCount()));
+  Logger::logDEBUG("realCount: " + String(queue.getRealCount()));*/
+  /*lcdLogINFO("executing command: [" + String(cmd[0]) + " " +
+                  String(cmd[1]) + " " + String(cmd[2]) + " " + String(cmd[3]) +
+                  "]");*/
+  /*lcdLogDEBUG("realCount: " + String(queue.getRealCount()));*/
 #endif
 }
 
